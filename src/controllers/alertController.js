@@ -1,0 +1,1 @@
+// Controle para envio de alertas
