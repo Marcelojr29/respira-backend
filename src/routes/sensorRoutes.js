@@ -1,10 +1,13 @@
 // Rotas para sensores
 const express = require('express');
-const router = express.Router();
-const sensorController = require('../controllers/sensorController');
-const authenticateToken = require('../middleware/authMiddleware');
+const { getAllSensors, createSensor, updateSensor, deleteSensor } = require('../controllers/sensorController');
+const { verifyToken } = require('../middleware/authMiddleware');
 
-router.post('/data', authenticateToken, sensorController.addSensorData);
-router.get('/data', authenticateToken, sensorController.getSensorData);
+const router = express.Router();
+
+router.get('/', verifyToken, getAllSensors);
+router.post('/', verifyToken, createSensor);
+router.put('/:id', verifyToken, updateSensor);
+router.delete('/:id', verifyToken, deleteSensor);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 // Modelo de dados dos sensores
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const { sequelize } = require('../config/db');
 
 const SensorData = sequelize.define('SensorData', {
     id: {

@@ -1,21 +1,48 @@
 // Controle dos dados dos sensores
-const SensorData = require('../models/SensorData');
+const sensor = require('../models/Sensor');
 
-exports.addSensorData = async (req, res) => {
+exports.getAllSensors = async (req, res) => {
     try {
-        const { sensorId, co2, temperature } = req.body;
-        const data = await SensorData.create({ sensorId, co2, temperature });
-        res.status(201).json(data);
+        const sensors = await Sensor.findAll();
+        res.status(200).json(sensors);
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao adicionar dados ao sensor.' });
+        res.status(500).json({ error: 'Erro ao buscar sensores' });
     }
 };
 
-exports.getSensorData = async (req, res) => {
-    try{
-        const data = await SensorData.findAll();
-        res.status(200).json(data);
+exports.createSensor = async (req, res) => {
+    const { name, location } = req.body;
+    try {
+        const sensor = await Sensor.create({ name, location });
+        res.status(201).json({ message: 'Sensor criado com sucesso', sensor });
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao buscar dados dos sensores.' });
+        res.status(500).json({ error: 'Erro ao criar sensor '});
+    }
+};
+
+exports.updateSensor = async (req, res) => {
+    const { id } = req.params;
+    const { name, location, status } = req.body;
+    try {
+        const sensor = await Sensor.findByPk(id);
+        if (!sensor) return res.status(404).json({ error: 'Sensor não encontrado' });
+
+        await sensor.update({ name, location, status });
+        res.status(200).json({ message: 'Sensor atualizado com sucesso', sensor });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao atualizar sensor' });
+    }
+};
+
+exports.deleteSensor = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const sensor = await Sensor.findByPk(id);
+        if (!sensor) return res.status(404).json({ error: 'Sensor não encontrado' });
+
+        await sensor.destroy();
+        res.status(200).json({ message: 'Sensor excluído com sucesso' });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao excluir sensor' });
     }
 };
